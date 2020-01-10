@@ -9,9 +9,9 @@ import java.util.Collections;
 import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.TreeMap;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Launcher {
 
@@ -20,56 +20,43 @@ public class Launcher {
 	private static long max;
 
 	public static void main(String[] args) throws Exception {
-		String fileName = "";
+//		String fileName = "";
 //		fileName = "a_example";
 //		fileName = "b_small";
 //		fileName = "c_medium";
-		fileName = "d_quite_big";
+//		fileName = "d_quite_big";
 //		fileName = "e_also_big";
-		loadInput(new File("in", fileName+".in"));
-		TreeMap<Long, ArrayList<Integer>> combinations = new TreeMap<>();
-		ArrayList<Integer> pizzasToOrder = process(pizzas,combinations);
-		writeOutput(pizzasToOrder, fileName);
+
+		Stream.of("a_example", "b_small", "c_medium", "d_quite_big", "e_also_big").forEach(fileName -> {
+			try {
+				loadInput(new File("in", fileName + ".in"));
+				TreeMap<Long, ArrayList<Integer>> combinations = new TreeMap<>();
+				ArrayList<Integer> pizzasToOrder = process(pizzas, combinations);
+				writeOutput(pizzasToOrder, fileName);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
 	}
 
-	private static ArrayList<Integer> process(ArrayList<Long> allPizzas, TreeMap<Long, ArrayList<Integer>> combinations) {
+	private static ArrayList<Integer> process(ArrayList<Long> allPizzas,
+			TreeMap<Long, ArrayList<Integer>> combinations) {
 		Collections.reverse(allPizzas);
 		int nbPizzas = allPizzas.size();
 		max = 0;
-		for (int i = 0 ; i< nbPizzas; i++) {
+		ArrayList<Integer> pizzasToOrder = new ArrayList<Integer>();
+		long score = 0;
+		for (int i = 0; i < nbPizzas; i++) {
 			Long pizza = allPizzas.get(i);
-//			final int index = i;
 			final int index = nbPizzas - i - 1;
-			ConcurrentHashMap<Long, ArrayList<Integer>> combinationsToAdd = new ConcurrentHashMap<Long, ArrayList<Integer>>(); 
-			combinations.entrySet().parallelStream().forEach(e -> {
-				long newScore = e.getKey() + pizza;
-				if (newScore <= maxSlices) {
-					if (!combinations.containsKey(newScore) && !combinationsToAdd.containsKey(newScore)) {
-						max = Math.max(max, newScore);
-						ArrayList<Integer> newPizzasToOrder = new ArrayList<Integer>(e.getValue().size()+1);
-//						newPizzasToOrder.addAll(e.getValue());
-//						newPizzasToOrder.add(index);
-						newPizzasToOrder.add(index);
-						newPizzasToOrder.addAll(e.getValue());
-						combinationsToAdd.put(newScore, newPizzasToOrder);
-					}
-				}
-			});
-			combinations.putAll(combinationsToAdd);
-			
-			ArrayList<Integer> pizzasToOrder = new ArrayList<Integer>();
-			long newScore = pizza;
-			if (!combinations.containsKey(newScore)) {
-				max = Math.max(max, newScore);
-				ArrayList<Integer> newPizzasToOrder = new ArrayList<Integer>(pizzasToOrder);
-				newPizzasToOrder.add(index);
-				combinations.put(newScore, newPizzasToOrder);
+			if (score + pizza < maxSlices) {
+				pizzasToOrder.add(index);
+				score += pizza;
 			}
-			System.out.println("index: " + index + " combinations:" + combinations.size() + " max: " + max);
 		}
-		Entry<Long, ArrayList<Integer>> best = combinations.pollLastEntry();
-		System.out.println("score: " + best.getKey());
-		return best.getValue();
+		System.out.println("score: " + score);
+		Collections.reverse(pizzasToOrder);
+		return pizzasToOrder;
 	}
 
 	private static void loadInput(File file) throws FileNotFoundException {
@@ -78,11 +65,11 @@ public class Launcher {
 			int nbPizzas = scanner.nextInt();
 			pizzas = new ArrayList<>(nbPizzas);
 			scanner.forEachRemaining(s -> pizzas.add(Long.parseLong(s)));
-			System.out.println(pizzas);
+//			System.out.println(pizzas);
 			final LongAdder longAdder = new LongAdder();
 			pizzas.forEach(longAdder::add);
-			System.out.println(maxSlices);
-			System.out.println(longAdder.sum());
+//			System.out.println(maxSlices);
+//			System.out.println(longAdder.sum());
 		}
 	}
 
@@ -95,5 +82,5 @@ public class Launcher {
 			bwriter.write(pizzas.stream().map(i -> Integer.toString(i)).collect(Collectors.joining(" ")));
 		}
 	}
-	
+
 }
