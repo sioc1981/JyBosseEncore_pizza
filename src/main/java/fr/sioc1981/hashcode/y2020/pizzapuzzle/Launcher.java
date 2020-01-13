@@ -18,6 +18,7 @@ public class Launcher {
 	private static ArrayList<Long> pizzas;
 	private static long max;
 	private static long allScore;
+	private static Long allSlices;
 
 	public static void main(String[] args) throws Exception {
 //		String fileName = "";
@@ -56,7 +57,7 @@ public class Launcher {
 				score += pizza;
 			}
 		}
-		System.out.println("score: " + score);
+		System.out.println("score: " + score + " / " + allSlices);
 		allScore += score;
 		Collections.reverse(pizzasToOrder);
 		return pizzasToOrder;
@@ -70,7 +71,7 @@ public class Launcher {
 			scanner.forEachRemaining(s -> pizzas.add(Long.parseLong(s)));
 //			System.out.println(pizzas);
 			final LongAdder longAdder = new LongAdder();
-			pizzas.forEach(longAdder::add);
+			allSlices = pizzas.parallelStream().reduce((a,b) -> a+b).get();
 //			System.out.println(maxSlices);
 //			System.out.println(longAdder.sum());
 		}
