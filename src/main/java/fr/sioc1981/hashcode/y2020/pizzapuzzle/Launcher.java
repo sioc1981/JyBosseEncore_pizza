@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.LongAdder;
@@ -18,6 +17,7 @@ public class Launcher {
 	private static int maxSlices;
 	private static ArrayList<Long> pizzas;
 	private static long max;
+	private static long allScore;
 
 	public static void main(String[] args) throws Exception {
 //		String fileName = "";
@@ -37,6 +37,8 @@ public class Launcher {
 				e.printStackTrace();
 			}
 		});
+		
+		System.out.println("All Scores: " + allScore);
 	}
 
 	private static ArrayList<Integer> process(ArrayList<Long> allPizzas,
@@ -55,6 +57,7 @@ public class Launcher {
 			}
 		}
 		System.out.println("score: " + score);
+		allScore += score;
 		Collections.reverse(pizzasToOrder);
 		return pizzasToOrder;
 	}
