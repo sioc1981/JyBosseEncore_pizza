@@ -47,10 +47,10 @@ public class Launcher {
 		int nbPizzas = allPizzas.size();
 		ArrayList<Integer> pizzasToOrder = null;
 		long best = 0;
-		for (int j = 0; j < nbPizzas; j++) {
+		for (int starIndex = 0; starIndex < nbPizzas; starIndex++) {
 			ArrayList<Integer> currentPizzasToOrder = new ArrayList<Integer>();
 			long score = 0;
-			for (int i = j; i < nbPizzas; i++) {
+			for (int i = starIndex; i < nbPizzas; i++) {
 				Long pizza = allPizzas.get(i);
 				final int index = nbPizzas - i - 1;
 				if (score + pizza <= maxSlices) {
@@ -67,7 +67,7 @@ public class Launcher {
 				break;
 			}
 		}
-		System.out.println("score: " + best + " / " + allSlices);
+		System.out.println("score: " + best + " / " + maxSlices + " / " + allSlices);
 		allScore += best;
 		Collections.reverse(pizzasToOrder);
 		return pizzasToOrder;
