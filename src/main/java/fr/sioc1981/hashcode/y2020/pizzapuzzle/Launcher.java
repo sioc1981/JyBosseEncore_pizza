@@ -16,7 +16,6 @@ public class Launcher {
 
 	private static int maxSlices;
 	private static ArrayList<Long> pizzas;
-	private static long max;
 	private static long allScore;
 	private static Long allSlices;
 
@@ -46,19 +45,30 @@ public class Launcher {
 			TreeMap<Long, ArrayList<Integer>> combinations) {
 		Collections.reverse(allPizzas);
 		int nbPizzas = allPizzas.size();
-		max = 0;
-		ArrayList<Integer> pizzasToOrder = new ArrayList<Integer>();
-		long score = 0;
-		for (int i = 0; i < nbPizzas; i++) {
-			Long pizza = allPizzas.get(i);
-			final int index = nbPizzas - i - 1;
-			if (score + pizza < maxSlices) {
-				pizzasToOrder.add(index);
-				score += pizza;
+		ArrayList<Integer> pizzasToOrder = null;
+		long best = 0;
+		for (int j = 0; j < nbPizzas; j++) {
+			ArrayList<Integer> currentPizzasToOrder = new ArrayList<Integer>();
+			long score = 0;
+			for (int i = j; i < nbPizzas; i++) {
+				Long pizza = allPizzas.get(i);
+				final int index = nbPizzas - i - 1;
+				if (score + pizza <= maxSlices) {
+					currentPizzasToOrder.add(index);
+					score += pizza;
+				}
+			}
+			if (score > best) {
+				best = score;
+				pizzasToOrder = currentPizzasToOrder;
+			}
+			
+			if(score == maxSlices) {
+				break;
 			}
 		}
-		System.out.println("score: " + score + " / " + allSlices);
-		allScore += score;
+		System.out.println("score: " + best + " / " + allSlices);
+		allScore += best;
 		Collections.reverse(pizzasToOrder);
 		return pizzasToOrder;
 	}
