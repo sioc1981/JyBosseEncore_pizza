@@ -4,6 +4,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Scanner;
@@ -30,7 +32,8 @@ public class Launcher {
 //		fileName = "c_medium";
 //		fileName = "d_quite_big";
 //		fileName = "e_also_big";
-
+		Instant start = Instant.now();
+		
 		Stream.of(
 				"a_example"
 				, 
@@ -52,7 +55,7 @@ public class Launcher {
 			}
 		});
 		
-		System.out.println("All Scores: " + allScore);
+		System.out.println("All Scores: " + allScore + " in " + Duration.between(start, Instant.now()));
 	}
 
 	private static ArrayList<Integer> process(ArrayList<Long> allPizzas) {
